@@ -37,10 +37,10 @@ RDG                 := no
 RICHARDS            := no
 SOLID_MECHANICS     := no
 STOCHASTIC_TOOLS    := no
-TENSOR_MECHANICS    := no
+TENSOR_MECHANICS    := yes
 WATER_STEAM_EOS     := no
 XFEM                := no
-POROUS_FLOW         := no
+POROUS_FLOW         := yes
 
 include $(MOOSE_DIR)/modules/modules.mk
 ###############################################################################

@@ -1,9 +1,15 @@
+// Local Includes
 #include "snipeApp.h"
+
+// MOOSE Includes
 #include "Moose.h"
 #include "AppFactory.h"
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 
+/*******************************************************************************
+Input template (do NOT touch)
+*******************************************************************************/
 template <>
 InputParameters
 validParams<snipeApp>()
@@ -11,6 +17,10 @@ validParams<snipeApp>()
   InputParameters params = validParams<MooseApp>();
   return params;
 }
+
+/*******************************************************************************
+Routine: SnipeApp -- constructor
+*******************************************************************************/
 
 snipeApp::snipeApp(InputParameters parameters) : MooseApp(parameters)
 {
@@ -74,12 +84,18 @@ snipeApp__registerApps()
   snipeApp::registerApps();
 }
 
+/*******************************************************************************
+Routine: registerObjects
+*******************************************************************************/
 extern "C" void
 snipeApp__registerObjects(Factory & factory)
 {
   snipeApp::registerObjects(factory);
 }
 
+/*******************************************************************************
+Routine: registerApps
+*******************************************************************************/
 extern "C" void
 snipeApp__associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
