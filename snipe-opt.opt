@@ -2182,6 +2182,11 @@
                                                                  # generator
                                                                  # Group: Advanced
         type               = VectorPostprocessorVisualizationAux
+        use_broadcast      = 0                                   # Causes this AuxKernel to use a broadcasted
+                                                                 # version of the vector instead of a scattered
+                                                                 # version of the vector (the default).
+                                                                 # This is slower - but is useful for debugging
+                                                                 # and testing
         use_displaced_mesh = 0                                   # Whether or not this object should use
                                                                  # the displaced mesh for computation. 
                                                                  # Note that in the case this is true but
@@ -2653,6 +2658,50 @@
                                               # to
         vector_tags        = nontime          # The tag for the vectors this Kernel should fill
                                               # Group: Tagging
+      [../]
+
+      [./<CoupledPressureBC>]
+        # Applies a pressure from a variable on a given boundary in a given direction
+        boundary           = (required)        # The list of boundary IDs from the mesh where this boundary
+                                               # condition applies
+        component          = (required)        # The component for the pressure
+        control_tags       =                   # Adds user-defined labels for accessing object parameters
+                                               # via control logic.
+                                               # Group: Advanced
+        diag_save_in       =                   # The name of auxiliary variables to save this BC's diagonal
+                                               # jacobian contributions to.  Everything about that variable
+                                               # must match everything about this variable (the type, what
+                                               # blocks it's on, etc.)
+                                               # Group: Advanced
+        enable             = 1                 # Set the enabled status of the MooseObject.
+                                               # Group: Advanced
+        extra_matrix_tags  =                   # The extra tags for the matrices this Kernel should fill
+                                               # Group: Tagging
+        extra_vector_tags  =                   # The extra tags for the vectors this Kernel should fill
+                                               # Group: Tagging
+        implicit           = 1                 # Determines whether this object is calculated using an implicit
+                                               # or explicit form
+                                               # Group: Advanced
+        matrix_tags        = system            # The tag for the matrices this Kernel should fill
+                                               # Group: Tagging
+        pressure           = (required)        # Coupled variable containing the pressure
+        save_in            =                   # The name of auxiliary variables to save this BC's residual
+                                               # contributions to.  Everything about that variable must
+                                               # match everything about this variable (the type, what blocks
+                                               # it's on, etc.)
+                                               # Group: Advanced
+        seed               = 0                 # The seed for the master random number generator
+                                               # Group: Advanced
+        type               = CoupledPressureBC
+        use_displaced_mesh = 1                 # Whether or not this object should use the displaced mesh
+                                               # for computation.  Note that in the case this is true but
+                                               # no displacements are provided in the Mesh block the undisplaced
+                                               # mesh will still be used.
+                                               # Group: Advanced
+        variable           = (required)        # The name of the variable that this boundary condition applies
+                                               # to
+        vector_tags        = nontime           # The tag for the vectors this Kernel should fill
+                                               # Group: Tagging
       [../]
 
       [./<DGFunctionDiffusionDirichletBC>]
@@ -4420,6 +4469,24 @@
       temperature          = (required) # The name of the average temperature postprocessor value
       use_displaced_mesh   = 1          # Whether to use displaced mesh in the boundary condition
       volume               = (required) # The name of the internal volume postprocessor value
+    [../]
+  [../]
+
+  [./CoupledPressure]
+
+    [./*]
+      active         = __all__    # If specified only the blocks named will be visited and made active
+      boundary       = (required) # The list of boundary IDs from the mesh where the pressure will be applied
+      disp_x         =            # The x displacement
+      disp_y         =            # The y displacement
+      disp_z         =            # The z displacement
+      displacements  =            # The displacements appropriate for the simulation geometry and coordinate
+                                  # system
+      inactive       =            # If specified blocks matching these identifiers will be skipped.
+      pressure       =            # The variable that contains the pressure
+      save_in_disp_x =            # The save_in variables for x displacement
+      save_in_disp_y =            # The save_in variables for y displacement
+      save_in_disp_z =            # The save_in variables for z displacement
     [../]
   [../]
 
@@ -6330,6 +6397,11 @@
                                                                  # generator
                                                                  # Group: Advanced
         type               = VectorPostprocessorVisualizationAux
+        use_broadcast      = 0                                   # Causes this AuxKernel to use a broadcasted
+                                                                 # version of the vector instead of a scattered
+                                                                 # version of the vector (the default).
+                                                                 # This is slower - but is useful for debugging
+                                                                 # and testing
         use_displaced_mesh = 0                                   # Whether or not this object should use
                                                                  # the displaced mesh for computation. 
                                                                  # Note that in the case this is true but
@@ -8852,15 +8924,15 @@
         matrix_tags                   = system                          # The tag for the matrices this
                                                                         # Kernel should fill
                                                                         # Group: Tagging
+        out_of_plane_direction        = z                               # The direction of the out_of_plane_strain
+                                                                        # variable used in the WeakPlaneStress
+                                                                        # kernel.
         out_of_plane_strain           =                                 # The name of the out_of_plane_strain
                                                                         # variable used in the WeakPlaneStress
                                                                         # kernel. Required only if want
                                                                         # to provide off-diagonal Jacobian
                                                                         # in plane stress analysis using
                                                                         # weak formulation.
-        out_of_plane_strain_direction = z                               # The direction of the out_of_plane_strain
-                                                                        # variable used in the WeakPlaneStress
-                                                                        # kernel.
         save_in                       =                                 # The name of auxiliary variables
                                                                         # to save this Kernel's residual
                                                                         # contributions to.  Everything
@@ -9419,15 +9491,15 @@
         matrix_tags                   = system                         # The tag for the matrices this Kernel
                                                                        # should fill
                                                                        # Group: Tagging
+        out_of_plane_direction        = z                              # The direction of the out_of_plane_strain
+                                                                       # variable used in the WeakPlaneStress
+                                                                       # kernel.
         out_of_plane_strain           =                                # The name of the out_of_plane_strain
                                                                        # variable used in the WeakPlaneStress
                                                                        # kernel. Required only if want to
                                                                        # provide off-diagonal Jacobian in
                                                                        # plane stress analysis using weak
                                                                        # formulation.
-        out_of_plane_strain_direction = z                              # The direction of the out_of_plane_strain
-                                                                       # variable used in the WeakPlaneStress
-                                                                       # kernel.
         save_in                       =                                # The name of auxiliary variables
                                                                        # to save this Kernel's residual
                                                                        # contributions to.  Everything about
@@ -9507,6 +9579,8 @@
         matrix_tags                      = system                        # The tag for the matrices this
                                                                          # Kernel should fill
                                                                          # Group: Tagging
+        out_of_plane_direction           = z                             # The direction of the out-of-plane
+                                                                         # strain.
         save_in                          =                               # The name of auxiliary variables
                                                                          # to save this Kernel's residual
                                                                          # contributions to.  Everything
@@ -11716,15 +11790,15 @@
         matrix_tags                   = system                            # The tag for the matrices this
                                                                           # Kernel should fill
                                                                           # Group: Tagging
+        out_of_plane_direction        = z                                 # The direction of the out_of_plane_strain
+                                                                          # variable used in the WeakPlaneStress
+                                                                          # kernel.
         out_of_plane_strain           =                                   # The name of the out_of_plane_strain
                                                                           # variable used in the WeakPlaneStress
                                                                           # kernel. Required only if want
                                                                           # to provide off-diagonal Jacobian
                                                                           # in plane stress analysis using
                                                                           # weak formulation.
-        out_of_plane_strain_direction = z                                 # The direction of the out_of_plane_strain
-                                                                          # variable used in the WeakPlaneStress
-                                                                          # kernel.
         save_in                       =                                   # The name of auxiliary variables
                                                                           # to save this Kernel's residual
                                                                           # contributions to.  Everything
@@ -11797,14 +11871,14 @@
         matrix_tags                   = system                    # The tag for the matrices this Kernel
                                                                   # should fill
                                                                   # Group: Tagging
+        out_of_plane_direction        = z                         # The direction of the out_of_plane_strain
+                                                                  # variable used in the WeakPlaneStress
+                                                                  # kernel.
         out_of_plane_strain           =                           # The name of the out_of_plane_strain
                                                                   # variable used in the WeakPlaneStress
                                                                   # kernel. Required only if want to provide
                                                                   # off-diagonal Jacobian in plane stress
                                                                   # analysis using weak formulation.
-        out_of_plane_strain_direction = z                         # The direction of the out_of_plane_strain
-                                                                  # variable used in the WeakPlaneStress
-                                                                  # kernel.
         save_in                       =                           # The name of auxiliary variables to save
                                                                   # this Kernel's residual contributions
                                                                   # to.  Everything about that variable
@@ -11870,12 +11944,12 @@
         matrix_tags                   = system                  # The tag for the matrices this Kernel should
                                                                 # fill
                                                                 # Group: Tagging
+        out_of_plane_direction        = z                       # The direction of the out_of_plane_strain
+                                                                # variable used in the WeakPlaneStress kernel.
         out_of_plane_strain           =                         # The name of the out_of_plane_strain variable
                                                                 # used in the WeakPlaneStress kernel. Required
                                                                 # only if want to provide off-diagonal Jacobian
                                                                 # in plane stress analysis using weak formulation.
-        out_of_plane_strain_direction = z                       # The direction of the out_of_plane_strain
-                                                                # variable used in the WeakPlaneStress kernel.
         save_in                       =                         # The name of auxiliary variables to save
                                                                 # this Kernel's residual contributions to.
                                                                 # Everything about that variable must match
@@ -12225,6 +12299,8 @@
     inactive                      =                 # If specified blocks matching these identifiers will
                                                     # be skipped.
     incremental                   =                 # Use incremental or total strain
+    out_of_plane_direction        = z               # The direction of the out-of-plane strain.
+                                                    # Group: Out-of-plane stress/strain
     out_of_plane_pressure         = 0               # Function used to prescribe pressure in the out-of-plane
                                                     # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                     # problems)
@@ -12274,6 +12350,8 @@
     inactive                      =                 # If specified blocks matching these identifiers will
                                                     # be skipped.
     incremental                   =                 # Use incremental or total strain
+    out_of_plane_direction        = z               # The direction of the out-of-plane strain.
+                                                    # Group: Out-of-plane stress/strain
     out_of_plane_pressure         = 0               # Function used to prescribe pressure in the out-of-plane
                                                     # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                     # problems)
@@ -12319,6 +12397,8 @@
     inactive                      =                 # If specified blocks matching these identifiers will
                                                     # be skipped.
     incremental                   =                 # Use incremental or total strain
+    out_of_plane_direction        = z               # The direction of the out-of-plane strain.
+                                                    # Group: Out-of-plane stress/strain
     out_of_plane_pressure         = 0               # Function used to prescribe pressure in the out-of-plane
                                                     # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                     # problems)
@@ -13867,6 +13947,8 @@
                                                                           # is calculated using an implicit
                                                                           # or explicit form
                                                                           # Group: Advanced
+        out_of_plane_direction        = z                                 # The direction of the out-of-plane
+                                                                          # strain.
         output_properties             =                                   # List of material properties,
                                                                           # from this material, to output
                                                                           # (outputs must also be defined
@@ -13940,6 +14022,8 @@
                                                                                # an implicit or explicit
                                                                                # form
                                                                                # Group: Advanced
+        out_of_plane_direction        = z                                      # The direction of the out-of-plane
+                                                                               # strain.
         output_properties             =                                        # List of material properties,
                                                                                # from this material, to
                                                                                # output (outputs must also
@@ -14008,6 +14092,8 @@
                                                                          # is calculated using an implicit
                                                                          # or explicit form
                                                                          # Group: Advanced
+        out_of_plane_direction        = z                                # The direction of the out-of-plane
+                                                                         # strain.
         output_properties             =                                  # List of material properties,
                                                                          # from this material, to output
                                                                          # (outputs must also be defined
@@ -16429,6 +16515,7 @@
         implicit                      = 1                        # Determines whether this object is calculated
                                                                  # using an implicit or explicit form
                                                                  # Group: Advanced
+        out_of_plane_direction        = z                        # The direction of the out-of-plane strain.
         out_of_plane_strain           =                          # Nonlinear variable for plane stress condition
         output_properties             =                          # List of material properties, from this
                                                                  # material, to output (outputs must also
@@ -16493,6 +16580,8 @@
                                                                       # calculated using an implicit or
                                                                       # explicit form
                                                                       # Group: Advanced
+        out_of_plane_direction        = z                             # The direction of the out-of-plane
+                                                                      # strain.
         out_of_plane_strain           =                               # Nonlinear variable for plane stress
                                                                       # condition
         output_properties             =                               # List of material properties, from
@@ -16554,6 +16643,7 @@
         implicit                      = 1                       # Determines whether this object is calculated
                                                                 # using an implicit or explicit form
                                                                 # Group: Advanced
+        out_of_plane_direction        = z                       # The direction of the out-of-plane strain.
         out_of_plane_strain           =                         # Nonlinear variable for plane stress condition
         output_properties             =                         # List of material properties, from this
                                                                 # material, to output (outputs must also
@@ -19688,120 +19778,6 @@
                                                # Group: Advanced
       [../]
 
-      [./<PorousFlow1PhaseP_BW>]
-        # Broadbridge-white form of effective saturation for negligable Kn.  Then porepressure = -las *
-        # ((1 - th) / th - (1 / c) * Ln((C - th)/((C - 1) * th))), for th = (Seff - Sn) / (Ss - Sn).  A
-        # Lambert-W function must be evaluated to express Seff in terms of porepressure, which can be expensive
-        C                  = (required)           # BW's C parameter.  Must be > 1.  Typical value would
-                                                  # be 1.05.
-        PorousFlowDictator = (required)           # The UserObject that holds the list of Porous-Flow variable
-                                                  # names
-        Sn                 = (required)           # Low saturation.  This must be < Ss, and non-negative.
-                                                  # This is BW's initial effective saturation, below which
-                                                  # effective saturation never goes in their simulations/models.
-                                                  # If Kn=0 then Sn is the immobile saturation.  This form
-                                                  # of effective saturation is only correct for Kn small.
-        Ss                 = 1                    # High saturation.  This must be > Sn and <= 1.  Effective
-                                                  # saturation where porepressure = 0.  Effective saturation
-                                                  # never exceeds this value in BW's simulations/models.
-        at_nodes           = 0                    # Evaluate Material properties at nodes instead of quadpoints
-        block              =                      # The list of block ids (SubdomainID) that this object
-                                                  # will be applied
-        boundary           =                      # The list of boundary IDs from the mesh where this boundary
-                                                  # condition applies
-        capillary_pressure =                      # Name of the UserObject defining the capillary pressure
-        compute            = 1                    # When false, MOOSE will not call compute methods on this
-                                                  # material. The user must call computeProperties() after
-                                                  # retrieving the Material via MaterialPropertyInterface::getMaterial().
-                                                  # Non-computed Materials are not sorted for dependencies.
-        constant_on        = NONE                 # When ELEMENT, MOOSE will only call computeQpProperties()
-                                                  # for the 0th quadrature point, and then copy that value
-                                                  # to the other qps.When SUBDOMAIN, MOOSE will only call
-                                                  # computeSubdomainProperties() for the 0th quadrature
-                                                  # point, and then copy that value to the other qps. Evaluations
-                                                  # on element qps will be skipped
-                                                  # Group: Advanced
-        control_tags       =                      # Adds user-defined labels for accessing object parameters
-                                                  # via control logic.
-                                                  # Group: Advanced
-        enable             = 1                    # Set the enabled status of the MooseObject.
-                                                  # Group: Advanced
-        implicit           = 1                    # Determines whether this object is calculated using an
-                                                  # implicit or explicit form
-                                                  # Group: Advanced
-        las                = (required)           # BW's lambda_s parameter multiplied by (fluid_density
-                                                  # * gravity).  Must be > 0.  Typical value would be 1E5
-        output_properties  =                      # List of material properties, from this material, to
-                                                  # output (outputs must also be defined to an output type)
-                                                  # Group: Outputs
-        outputs            = none                 # Vector of output names were you would like to restrict
-                                                  # the output of variables(s) associated with this object
-                                                  # Group: Outputs
-        porepressure       = (required)           # Variable that represents the porepressure of the single
-                                                  # phase
-        seed               = 0                    # The seed for the master random number generator
-                                                  # Group: Advanced
-        type               = PorousFlow1PhaseP_BW
-        use_displaced_mesh = 0                    # Whether or not this object should use the displaced
-                                                  # mesh for computation.  Note that in the case this is
-                                                  # true but no displacements are provided in the Mesh block
-                                                  # the undisplaced mesh will still be used.
-                                                  # Group: Advanced
-      [../]
-
-      [./<PorousFlow1PhaseP_VG>]
-        # This Material is used for the single-phase situation where porepressure is the primary variable.
-        # Calculates the 1 porepressure and the 1 saturation in a 1-phase isothermal situation, and derivatives
-        # of these with respect to the PorousFlowVariables.  A van Genuchten effective saturation (1 +
-        # (-al * p)^(1 / (1 - m)))^(-m) is assumed
-        PorousFlowDictator = (required)           # The UserObject that holds the list of Porous-Flow variable
-                                                  # names
-        al                 = (required)           # van Genuchten parameter alpha.  Must be positive
-        at_nodes           = 0                    # Evaluate Material properties at nodes instead of quadpoints
-        block              =                      # The list of block ids (SubdomainID) that this object
-                                                  # will be applied
-        boundary           =                      # The list of boundary IDs from the mesh where this boundary
-                                                  # condition applies
-        capillary_pressure =                      # Name of the UserObject defining the capillary pressure
-        compute            = 1                    # When false, MOOSE will not call compute methods on this
-                                                  # material. The user must call computeProperties() after
-                                                  # retrieving the Material via MaterialPropertyInterface::getMaterial().
-                                                  # Non-computed Materials are not sorted for dependencies.
-        constant_on        = NONE                 # When ELEMENT, MOOSE will only call computeQpProperties()
-                                                  # for the 0th quadrature point, and then copy that value
-                                                  # to the other qps.When SUBDOMAIN, MOOSE will only call
-                                                  # computeSubdomainProperties() for the 0th quadrature
-                                                  # point, and then copy that value to the other qps. Evaluations
-                                                  # on element qps will be skipped
-                                                  # Group: Advanced
-        control_tags       =                      # Adds user-defined labels for accessing object parameters
-                                                  # via control logic.
-                                                  # Group: Advanced
-        enable             = 1                    # Set the enabled status of the MooseObject.
-                                                  # Group: Advanced
-        implicit           = 1                    # Determines whether this object is calculated using an
-                                                  # implicit or explicit form
-                                                  # Group: Advanced
-        m                  = (required)           # van Genuchten exponent m.  Must be between 0 and 1,
-                                                  # and optimally should be set to > 0.5
-        output_properties  =                      # List of material properties, from this material, to
-                                                  # output (outputs must also be defined to an output type)
-                                                  # Group: Outputs
-        outputs            = none                 # Vector of output names were you would like to restrict
-                                                  # the output of variables(s) associated with this object
-                                                  # Group: Outputs
-        porepressure       = (required)           # Variable that represents the porepressure of the single
-                                                  # phase
-        seed               = 0                    # The seed for the master random number generator
-                                                  # Group: Advanced
-        type               = PorousFlow1PhaseP_VG
-        use_displaced_mesh = 0                    # Whether or not this object should use the displaced
-                                                  # mesh for computation.  Note that in the case this is
-                                                  # true but no displacements are provided in the Mesh block
-                                                  # the undisplaced mesh will still be used.
-                                                  # Group: Advanced
-      [../]
-
       [./<PorousFlow2PhasePP>]
         # This Material calculates the 2 porepressures and the 2 saturations in a 2-phase isothermal situation,
         # and derivatives of these with respect to the PorousFlowVariables
@@ -19850,123 +19826,6 @@
                                                  # but no displacements are provided in the Mesh block the
                                                  # undisplaced mesh will still be used.
                                                  # Group: Advanced
-      [../]
-
-      [./<PorousFlow2PhasePP_RSC>]
-        # Rogers-Stallybrass-Clements version of effective saturation for the water phase, valid for residual
-        # saturations = 0, and viscosityOil = 2 * viscosityWater.  seff_water = 1 / sqrt(1 + exp((Pc -
-        # shift) / scale)), where scale = 0.25 * scale_ratio * oil_viscosity.
-        PorousFlowDictator  = (required)             # The UserObject that holds the list of Porous-Flow
-                                                     # variable names
-        at_nodes            = 0                      # Evaluate Material properties at nodes instead of
-                                                     # quadpoints
-        block               =                        # The list of block ids (SubdomainID) that this object
-                                                     # will be applied
-        boundary            =                        # The list of boundary IDs from the mesh where this
-                                                     # boundary condition applies
-        capillary_pressure  =                        # Name of the UserObject defining the capillary pressure
-        compute             = 1                      # When false, MOOSE will not call compute methods on
-                                                     # this material. The user must call computeProperties()
-                                                     # after retrieving the Material via MaterialPropertyInterface::getMaterial().
-                                                     # Non-computed Materials are not sorted for dependencies.
-        constant_on         = NONE                   # When ELEMENT, MOOSE will only call computeQpProperties()
-                                                     # for the 0th quadrature point, and then copy that
-                                                     # value to the other qps.When SUBDOMAIN, MOOSE will
-                                                     # only call computeSubdomainProperties() for the 0th
-                                                     # quadrature point, and then copy that value to the
-                                                     # other qps. Evaluations on element qps will be skipped
-                                                     # Group: Advanced
-        control_tags        =                        # Adds user-defined labels for accessing object parameters
-                                                     # via control logic.
-                                                     # Group: Advanced
-        enable              = 1                      # Set the enabled status of the MooseObject.
-                                                     # Group: Advanced
-        implicit            = 1                      # Determines whether this object is calculated using
-                                                     # an implicit or explicit form
-                                                     # Group: Advanced
-        oil_viscosity       =                        # Viscosity of oil (gas) phase.  It is assumed this
-                                                     # is double the water-phase viscosity.  (Note that
-                                                     # this effective saturation is mostly useful for 2-phase,
-                                                     # not single-phase.)
-        output_properties   =                        # List of material properties, from this material,
-                                                     # to output (outputs must also be defined to an output
-                                                     # type)
-                                                     # Group: Outputs
-        outputs             = none                   # Vector of output names were you would like to restrict
-                                                     # the output of variables(s) associated with this object
-                                                     # Group: Outputs
-        phase0_porepressure = (required)             # Variable that is the porepressure of phase 0 (eg,
-                                                     # the water phase).  It will be <= phase1_porepressure.
-        phase1_porepressure = (required)             # Variable that is the porepressure of phase 1 (eg,
-                                                     # the gas phase)
-        scale_ratio         =                        # This is porosity / permeability / beta^2, where beta
-                                                     # may be chosen by the user.  It has dimensions [time]
-        seed                = 0                      # The seed for the master random number generator
-                                                     # Group: Advanced
-        shift               =                        # effective saturation is a function of (Pc - shift)
-        type                = PorousFlow2PhasePP_RSC
-        use_displaced_mesh  = 0                      # Whether or not this object should use the displaced
-                                                     # mesh for computation.  Note that in the case this
-                                                     # is true but no displacements are provided in the
-                                                     # Mesh block the undisplaced mesh will still be used.
-                                                     # Group: Advanced
-      [../]
-
-      [./<PorousFlow2PhasePP_VG>]
-        # This Material calculates the 2 porepressures and the 2 saturations in a 2-phase isothermal situation,
-        # and derivatives of these with respect to the PorousFlowVariables. Calculates the 1 porepressure
-        # and the 1 saturation in a 1-phase isothermal situation, and derivatives of these with respect
-        # to the PorousFlowVariables.  A van Genuchten effective saturation (1 + (-al * p)^(1 / (1 - m)))^(-m)
-        # is assumed, where p = phase0_porepressure - phase1_porepressure <= 0
-        PorousFlowDictator  = (required)            # The UserObject that holds the list of Porous-Flow
-                                                    # variable names
-        al                  = (required)            # van Genuchten parameter alpha.  Must be positive
-        at_nodes            = 0                     # Evaluate Material properties at nodes instead of quadpoints
-        block               =                       # The list of block ids (SubdomainID) that this object
-                                                    # will be applied
-        boundary            =                       # The list of boundary IDs from the mesh where this
-                                                    # boundary condition applies
-        capillary_pressure  =                       # Name of the UserObject defining the capillary pressure
-        compute             = 1                     # When false, MOOSE will not call compute methods on
-                                                    # this material. The user must call computeProperties()
-                                                    # after retrieving the Material via MaterialPropertyInterface::getMaterial().
-                                                    # Non-computed Materials are not sorted for dependencies.
-        constant_on         = NONE                  # When ELEMENT, MOOSE will only call computeQpProperties()
-                                                    # for the 0th quadrature point, and then copy that value
-                                                    # to the other qps.When SUBDOMAIN, MOOSE will only call
-                                                    # computeSubdomainProperties() for the 0th quadrature
-                                                    # point, and then copy that value to the other qps.
-                                                    # Evaluations on element qps will be skipped
-                                                    # Group: Advanced
-        control_tags        =                       # Adds user-defined labels for accessing object parameters
-                                                    # via control logic.
-                                                    # Group: Advanced
-        enable              = 1                     # Set the enabled status of the MooseObject.
-                                                    # Group: Advanced
-        implicit            = 1                     # Determines whether this object is calculated using
-                                                    # an implicit or explicit form
-                                                    # Group: Advanced
-        m                   = (required)            # van Genuchten exponent m.  Must be between 0 and 1,
-                                                    # and optimally should be set to >0.5
-        output_properties   =                       # List of material properties, from this material, to
-                                                    # output (outputs must also be defined to an output
-                                                    # type)
-                                                    # Group: Outputs
-        outputs             = none                  # Vector of output names were you would like to restrict
-                                                    # the output of variables(s) associated with this object
-                                                    # Group: Outputs
-        phase0_porepressure = (required)            # Variable that is the porepressure of phase 0 (eg,
-                                                    # the water phase).  It will be <= phase1_porepressure.
-        phase1_porepressure = (required)            # Variable that is the porepressure of phase 1 (eg,
-                                                    # the gas phase)
-        seed                = 0                     # The seed for the master random number generator
-                                                    # Group: Advanced
-        type                = PorousFlow2PhasePP_VG
-        use_displaced_mesh  = 0                     # Whether or not this object should use the displaced
-                                                    # mesh for computation.  Note that in the case this
-                                                    # is true but no displacements are provided in the Mesh
-                                                    # block the undisplaced mesh will still be used.
-                                                    # Group: Advanced
       [../]
 
       [./<PorousFlow2PhasePS>]
@@ -20019,63 +19878,6 @@
                                                  # but no displacements are provided in the Mesh block the
                                                  # undisplaced mesh will still be used.
                                                  # Group: Advanced
-      [../]
-
-      [./<PorousFlow2PhasePS_VG>]
-        # This Material calculates the 2 porepressures and the 2 saturations in a 2-phase isothermal situation
-        # using a van Genucten capillary pressure, and derivatives of these with respect to the PorousFlowVariables
-        PorousFlowDictator  = (required)            # The UserObject that holds the list of Porous-Flow
-                                                    # variable names
-        at_nodes            = 0                     # Evaluate Material properties at nodes instead of quadpoints
-        block               =                       # The list of block ids (SubdomainID) that this object
-                                                    # will be applied
-        boundary            =                       # The list of boundary IDs from the mesh where this
-                                                    # boundary condition applies
-        capillary_pressure  =                       # Name of the UserObject defining the capillary pressure
-        compute             = 1                     # When false, MOOSE will not call compute methods on
-                                                    # this material. The user must call computeProperties()
-                                                    # after retrieving the Material via MaterialPropertyInterface::getMaterial().
-                                                    # Non-computed Materials are not sorted for dependencies.
-        constant_on         = NONE                  # When ELEMENT, MOOSE will only call computeQpProperties()
-                                                    # for the 0th quadrature point, and then copy that value
-                                                    # to the other qps.When SUBDOMAIN, MOOSE will only call
-                                                    # computeSubdomainProperties() for the 0th quadrature
-                                                    # point, and then copy that value to the other qps.
-                                                    # Evaluations on element qps will be skipped
-                                                    # Group: Advanced
-        control_tags        =                       # Adds user-defined labels for accessing object parameters
-                                                    # via control logic.
-                                                    # Group: Advanced
-        enable              = 1                     # Set the enabled status of the MooseObject.
-                                                    # Group: Advanced
-        implicit            = 1                     # Determines whether this object is calculated using
-                                                    # an implicit or explicit form
-                                                    # Group: Advanced
-        m                   = (required)            # van Genuchten exponent m
-        output_properties   =                       # List of material properties, from this material, to
-                                                    # output (outputs must also be defined to an output
-                                                    # type)
-                                                    # Group: Outputs
-        outputs             = none                  # Vector of output names were you would like to restrict
-                                                    # the output of variables(s) associated with this object
-                                                    # Group: Outputs
-        p0                  = (required)            # Capillary pressure coefficient P0. Must be > 0
-        pc_max              = -1.79769e+308         # Maximum capillary pressure (Pa). Must be <= 0. Default
-                                                    # is -std::numeric_limits<Real>::max()
-        phase0_porepressure = (required)            # Variable that is the porepressure of phase 0 (eg,
-                                                    # the gas phase)
-        phase1_saturation   = (required)            # Variable that is the saturation of phase 1 (eg, the
-                                                    # water phase)
-        sat_lr              = 0                     # Liquid residual saturation.  Must be between 0 and
-                                                    # 1. Default is 0
-        seed                = 0                     # The seed for the master random number generator
-                                                    # Group: Advanced
-        type                = PorousFlow2PhasePS_VG
-        use_displaced_mesh  = 0                     # Whether or not this object should use the displaced
-                                                    # mesh for computation.  Note that in the case this
-                                                    # is true but no displacements are provided in the Mesh
-                                                    # block the undisplaced mesh will still be used.
-                                                    # Group: Advanced
       [../]
 
       [./<PorousFlowAqueousPreDisChemistry>]
@@ -21476,6 +21278,64 @@
                                                                 # Group: Advanced
       [../]
 
+      [./<PorousFlowPermeabilityTensorFromVar>]
+        # This Material calculates the permeability tensor from a coupled variable multiplied by a tensor
+        PorousFlowDictator = (required)                          # The UserObject that holds the list of
+                                                                 # Porous-Flow variable names
+        at_nodes           = 0                                   # Evaluate Material properties at nodes
+                                                                 # instead of quadpoints
+        block              =                                     # The list of block ids (SubdomainID) that
+                                                                 # this object will be applied
+        boundary           =                                     # The list of boundary IDs from the mesh
+                                                                 # where this boundary condition applies
+        compute            = 1                                   # When false, MOOSE will not call compute
+                                                                 # methods on this material. The user must
+                                                                 # call computeProperties() after retrieving
+                                                                 # the Material via MaterialPropertyInterface::getMaterial().
+                                                                 # Non-computed Materials are not sorted
+                                                                 # for dependencies.
+        constant_on        = NONE                                # When ELEMENT, MOOSE will only call computeQpProperties()
+                                                                 # for the 0th quadrature point, and then
+                                                                 # copy that value to the other qps.When
+                                                                 # SUBDOMAIN, MOOSE will only call computeSubdomainProperties()
+                                                                 # for the 0th quadrature point, and then
+                                                                 # copy that value to the other qps. Evaluations
+                                                                 # on element qps will be skipped
+                                                                 # Group: Advanced
+        control_tags       =                                     # Adds user-defined labels for accessing
+                                                                 # object parameters via control logic.
+                                                                 # Group: Advanced
+        enable             = 1                                   # Set the enabled status of the MooseObject.
+                                                                 # Group: Advanced
+        implicit           = 1                                   # Determines whether this object is calculated
+                                                                 # using an implicit or explicit form
+                                                                 # Group: Advanced
+        k_anisotropy       =                                     # A tensor to multiply the scalar permeability,
+                                                                 # in order to obtain anisotropy if required.
+                                                                 # Defaults to isotropic permeability if
+                                                                 # not specified.
+        output_properties  =                                     # List of material properties, from this
+                                                                 # material, to output (outputs must also
+                                                                 # be defined to an output type)
+                                                                 # Group: Outputs
+        outputs            = none                                # Vector of output names were you would
+                                                                 # like to restrict the output of variables(s)
+                                                                 # associated with this object
+                                                                 # Group: Outputs
+        perm               = (required)                          # The scalar permeability
+        seed               = 0                                   # The seed for the master random number
+                                                                 # generator
+                                                                 # Group: Advanced
+        type               = PorousFlowPermeabilityTensorFromVar
+        use_displaced_mesh = 0                                   # Whether or not this object should use
+                                                                 # the displaced mesh for computation. 
+                                                                 # Note that in the case this is true but
+                                                                 # no displacements are provided in the
+                                                                 # Mesh block the undisplaced mesh will
+                                                                 # still be used.
+                                                                 # Group: Advanced
+      [../]
+
       [./<PorousFlowPorosity>]
         # This Material calculates the porosity PorousFlow simulations
         PorousFlowDictator             = (required)         # The UserObject that holds the list of Porous-Flow
@@ -21532,7 +21392,10 @@
                                                             # Group: Outputs
         porosity_zero                  = (required)         # The porosity at zero volumetric strain and
                                                             # reference temperature and reference effective
-                                                            # porepressure and reference chemistry
+                                                            # porepressure and reference chemistry.  This
+                                                            # must be a real number or a constant monomial
+                                                            # variable (not a linear lagrange or other type
+                                                            # of variable)
         reference_chemistry            =                    # Reference values of the solid mineral concentrations
                                                             # (m^3(precipitate)/m^3(porous material)), entered
                                                             # as a vector (one value per mineral).  (Only
@@ -21600,7 +21463,10 @@
         outputs            = none                    # Vector of output names were you would like to restrict
                                                      # the output of variables(s) associated with this object
                                                      # Group: Outputs
-        porosity           = (required)              # The porosity (assumed constant for this material)
+        porosity           = (required)              # The porosity (assumed indepenent of porepressure,
+                                                     # temperature, strain, etc, for this material).  This
+                                                     # should be a real number, or a constant monomial variable
+                                                     # (not a linear lagrange or other kind of variable).
         seed               = 0                       # The seed for the master random number generator
                                                      # Group: Advanced
         type               = PorousFlowPorosityConst
@@ -21670,7 +21536,10 @@
                                                               # Group: Outputs
         porosity_zero                  = (required)           # The porosity at zero volumetric strain and
                                                               # reference temperature and reference effective
-                                                              # porepressure and reference chemistry
+                                                              # porepressure and reference chemistry.  This
+                                                              # must be a real number or a constant monomial
+                                                              # variable (not a linear lagrange or other
+                                                              # type of variable)
         reference_chemistry            =                      # Reference values of the solid mineral concentrations
                                                               # (m^3(precipitate)/m^3(porous material)),
                                                               # entered as a vector (one value per mineral).
@@ -21783,7 +21652,10 @@
         porosity_zero                  = (required)                      # The porosity at zero volumetric
                                                                          # strain and reference temperature
                                                                          # and reference effective porepressure
-                                                                         # and reference chemistry
+                                                                         # and reference chemistry.  This
+                                                                         # must be a real number or a constant
+                                                                         # monomial variable (not a linear
+                                                                         # lagrange or other type of variable)
         reference_chemistry            =                                 # Reference values of the solid
                                                                          # mineral concentrations (m^3(precipitate)/m^3(porous
                                                                          # material)), entered as a vector
@@ -21886,7 +21758,10 @@
                                                                # Group: Outputs
         porosity_zero                  = (required)            # The porosity at zero volumetric strain
                                                                # and reference temperature and reference
-                                                               # effective porepressure and reference chemistry
+                                                               # effective porepressure and reference chemistry.
+                                                               # This must be a real number or a constant
+                                                               # monomial variable (not a linear lagrange
+                                                               # or other type of variable)
         reference_chemistry            =                       # Reference values of the solid mineral concentrations
                                                                # (m^3(precipitate)/m^3(porous material)),
                                                                # entered as a vector (one value per mineral).
@@ -21978,7 +21853,10 @@
                                                               # Group: Outputs
         porosity_zero                  = (required)           # The porosity at zero volumetric strain and
                                                               # reference temperature and reference effective
-                                                              # porepressure and reference chemistry
+                                                              # porepressure and reference chemistry.  This
+                                                              # must be a real number or a constant monomial
+                                                              # variable (not a linear lagrange or other
+                                                              # type of variable)
         reference_chemistry            =                      # Reference values of the solid mineral concentrations
                                                               # (m^3(precipitate)/m^3(porous material)),
                                                               # entered as a vector (one value per mineral).
@@ -25358,6 +25236,7 @@
         factor                     = 1          # Scale factor applied to prescribed pressure
         inactive                   =            # If specified blocks matching these identifiers will be
                                                 # skipped.
+        out_of_plane_direction     = z          # The direction of the out-of-plane strain.
         out_of_plane_pressure      = 0          # Function used to prescribe pressure in the out-of-plane
                                                 # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                 # problems)
@@ -25557,6 +25436,8 @@
       inactive                      =                 # If specified blocks matching these identifiers will
                                                       # be skipped.
       incremental                   =                 # Use incremental or total strain
+      out_of_plane_direction        = z               # The direction of the out-of-plane strain.
+                                                      # Group: Out-of-plane stress/strain
       out_of_plane_pressure         = 0               # Function used to prescribe pressure in the out-of-plane
                                                       # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                       # problems)
@@ -25601,6 +25482,8 @@
         inactive                      =                 # If specified blocks matching these identifiers
                                                         # will be skipped.
         incremental                   =                 # Use incremental or total strain
+        out_of_plane_direction        = z               # The direction of the out-of-plane strain.
+                                                        # Group: Out-of-plane stress/strain
         out_of_plane_pressure         = 0               # Function used to prescribe pressure in the out-of-plane
                                                         # direction (y for 1D Axisymmetric or z for 2D Cartesian
                                                         # problems)
@@ -28846,8 +28729,8 @@
       [../]
 
       [./<CavityPressurePostprocessor>]
-        # Interfaces with the CavityPressureUserObject to storethe initial number of moles of a gas contained
-        # withinan internal volume
+        # Interfaces with the CavityPressureUserObject to store the initial number of moles of a gas contained
+        # within an internal volume.
         allow_duplicate_execution_on_initial = 0                           # In the case where this UserObject
                                                                            # is depended upon by an initial
                                                                            # condition, allow it to be executed
@@ -28878,7 +28761,8 @@
                                                                            # the output of variables(s)
                                                                            # associated with this object
                                                                            # Group: Advanced
-        quantity                             = (required)                  # The quantity to report
+        quantity                             = (required)                  # The quantity to report: initial_moles
+                                                                           # cavity_pressure
         type                                 = CavityPressurePostprocessor
         use_displaced_mesh                   = 1                           # Whether or not this object
                                                                            # should use the displaced mesh
@@ -33259,8 +33143,8 @@
       [../]
 
       [./<CavityPressurePostprocessor>]
-        # Interfaces with the CavityPressureUserObject to storethe initial number of moles of a gas contained
-        # withinan internal volume
+        # Interfaces with the CavityPressureUserObject to store the initial number of moles of a gas contained
+        # within an internal volume.
         allow_duplicate_execution_on_initial = 0                           # In the case where this UserObject
                                                                            # is depended upon by an initial
                                                                            # condition, allow it to be executed
@@ -33291,7 +33175,8 @@
                                                                            # the output of variables(s)
                                                                            # associated with this object
                                                                            # Group: Advanced
-        quantity                             = (required)                  # The quantity to report
+        quantity                             = (required)                  # The quantity to report: initial_moles
+                                                                           # cavity_pressure
         type                                 = CavityPressurePostprocessor
         use_displaced_mesh                   = 1                           # Whether or not this object
                                                                            # should use the displaced mesh
@@ -33304,7 +33189,7 @@
       [../]
 
       [./<CavityPressureUserObject>]
-        # Uses the ideal gas law to compute internal pressureand an initial moles of gas quantity
+        # Uses the ideal gas law to compute internal pressure and an initial moles of gas quantity.
         R                                    = (required)               # The universal gas constant for
                                                                         # the units used.
         allow_duplicate_execution_on_initial = 0                        # In the case where this UserObject
@@ -35024,7 +34909,7 @@
       [../]
 
       [./<GeneralizedPlaneStrainUserObject>]
-        # Generalized Plane Strain UserObject to provide Residual and diagonal Jacobian entry
+        # Generalized plane strain UserObject to provide residual and diagonal jacobian entries.
         allow_duplicate_execution_on_initial = 0                                # In the case where this
                                                                                 # UserObject is depended
                                                                                 # upon by an initial condition,
@@ -35060,6 +34945,8 @@
                                                                                 # an implicit or explicit
                                                                                 # form
                                                                                 # Group: Advanced
+        out_of_plane_direction               = z                                # The direction of the out-of-plane
+                                                                                # strain.
         out_of_plane_pressure                = 0                                # Function used to prescribe
                                                                                 # pressure in the out-of-plane
                                                                                 # direction
@@ -40564,6 +40451,7 @@
       [./<CrackDataSampler>]
         # Outputs the values of a set of domain integral postprocessors as a vector, along with their positions
         # along the crack front.
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                # In the case where this UserObject is depended
                                                                 # upon by an initial condition, allow it
                                                                 # to be executed twice during the initial
@@ -40644,6 +40532,59 @@
                                                             # are provided in the Mesh block the undisplaced
                                                             # mesh will still be used.
                                                             # Group: Advanced
+      [../]
+
+      [./<ElementValueSampler>]
+        # Samples values of elemental variable(s).
+        _is_broadcast                        = 1
+        allow_duplicate_execution_on_initial = 0                   # In the case where this UserObject is
+                                                                   # depended upon by an initial condition,
+                                                                   # allow it to be executed twice during
+                                                                   # the initial setup (once before the
+                                                                   # IC and again after mesh adaptivity
+                                                                   # (if applicable).
+                                                                   # Group: Advanced
+        block                                =                     # The list of block ids (SubdomainID)
+                                                                   # that this object will be applied
+        contains_complete_history            = 0                   # Set this flag to indicate that the
+                                                                   # values in all vectors declared by this
+                                                                   # VPP represent a time history (e.g.
+                                                                   # with each invocation, new values are
+                                                                   # added and old values are never removed).
+                                                                   # This changes the output so that only
+                                                                   # a single file is output and updated
+                                                                   # with each invocation
+        control_tags                         =                     # Adds user-defined labels for accessing
+                                                                   # object parameters via control logic.
+                                                                   # Group: Advanced
+        enable                               = 1                   # Set the enabled status of the MooseObject.
+                                                                   # Group: Advanced
+        execute_on                           = TIMESTEP_END        # The list of flag(s) indicating when
+                                                                   # this object should be executed, the
+                                                                   # available options include NONE, INITIAL,
+                                                                   # LINEAR, NONLINEAR, TIMESTEP_END, TIMESTEP_BEGIN,
+                                                                   # FINAL, CUSTOM.
+        implicit                             = 1                   # Determines whether this object is calculated
+                                                                   # using an implicit or explicit form
+                                                                   # Group: Advanced
+        outputs                              =                     # Vector of output names were you would
+                                                                   # like to restrict the output of variables(s)
+                                                                   # associated with this object
+                                                                   # Group: Advanced
+        seed                                 = 0                   # The seed for the master random number
+                                                                   # generator
+                                                                   # Group: Advanced
+        sort_by                              = (required)          # What to sort the samples by
+        type                                 = ElementValueSampler
+        use_displaced_mesh                   = 0                   # Whether or not this object should use
+                                                                   # the displaced mesh for computation.
+                                                                   # Note that in the case this is true
+                                                                   # but no displacements are provided in
+                                                                   # the Mesh block the undisplaced mesh
+                                                                   # will still be used.
+                                                                   # Group: Advanced
+        variable                             = (required)          # The names of the variables that this
+                                                                   # VectorPostprocessor operates on
       [../]
 
       [./<ElementVariablesDifferenceMax>]
@@ -40971,6 +40912,7 @@
       [../]
 
       [./<LineFunctionSampler>]
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                   # In the case where this UserObject is
                                                                    # depended upon by an initial condition,
                                                                    # allow it to be executed twice during
@@ -41021,6 +40963,7 @@
 
       [./<LineMaterialRankTwoSampler>]
         # Access a component of a RankTwoTensor
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                          # In the case where this UserObject
                                                                           # is depended upon by an initial
                                                                           # condition, allow it to be executed
@@ -41082,6 +41025,7 @@
 
       [./<LineMaterialRankTwoScalarSampler>]
         # Compute a scalar property of a RankTwoTensor
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                                # In the case where this
                                                                                 # UserObject is depended
                                                                                 # upon by an initial condition,
@@ -41155,6 +41099,7 @@
       [../]
 
       [./<LineMaterialRealSampler>]
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                       # In the case where this UserObject
                                                                        # is depended upon by an initial
                                                                        # condition, allow it to be executed
@@ -41207,6 +41152,7 @@
       [../]
 
       [./<LineValueSampler>]
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                # In the case where this UserObject is depended
                                                                 # upon by an initial condition, allow it
                                                                 # to be executed twice during the initial
@@ -41314,6 +41260,8 @@
       [../]
 
       [./<NodalValueSampler>]
+        # Samples values of nodal variable(s).
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                 # In the case where this UserObject is
                                                                  # depended upon by an initial condition,
                                                                  # allow it to be executed twice during
@@ -41367,6 +41315,7 @@
       [../]
 
       [./<PointValueSampler>]
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                 # In the case where this UserObject is
                                                                  # depended upon by an initial condition,
                                                                  # allow it to be executed twice during
@@ -41413,6 +41362,7 @@
       [../]
 
       [./<SideValueSampler>]
+        _is_broadcast                        = 1
         allow_duplicate_execution_on_initial = 0                # In the case where this UserObject is depended
                                                                 # upon by an initial condition, allow it
                                                                 # to be executed twice during the initial
